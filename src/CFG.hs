@@ -94,7 +94,10 @@ getLVOut ::
   -- | The CFG's live variables
   M.Map Int LV ->
   S.Set String
-getLVOut inBlock lVEquations = fromListToLVOut (getSetByLabelList (outLink inBlock) lVEquations)
+getLVOut inBlock lVEquations =
+  fromListToLVOut
+    ( getSetByLabelList (outLink inBlock) lVEquations
+    )
   where
     getSetByLabelList :: [Int] -> M.Map Int LV -> [S.Set String]
     getSetByLabelList list equations = L.map (\elem -> toSet (M.lookup elem equations)) list
@@ -111,10 +114,25 @@ getLV ::
   -- | The CFG
   CFG ->
   M.Map Int LV
-getLV equations graph = M.fromList $ L.map (\cfg -> (label cfg, LV {lvIn = getNewLVIn (label cfg) (block cfg) equations, lvOut = getLVOut cfg equations})) graph
+getLV equations graph =
+  M.fromList $
+    L.map
+      ( \cfg ->
+          ( label cfg,
+            LV
+              { lvIn = getNewLVIn (label cfg) (block cfg) equations,
+                lvOut = getLVOut cfg equations
+              }
+          )
+      )
+      graph
   where
     getNewLVIn :: Int -> BlockType -> M.Map Int LV -> S.Set String
-    getNewLVIn lb block equations = transferFunction block (maybe S.empty lvOut (M.lookup lb equations))
+    getNewLVIn lb block equations =
+      transferFunction
+        block
+        ( maybe S.empty lvOut (M.lookup lb equations)
+        )
 
 -- | The live variable analysis:
 -- 1. We obtain the chain, starting with a empty set for all LVIn and LVOut
