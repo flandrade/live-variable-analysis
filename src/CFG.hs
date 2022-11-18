@@ -13,7 +13,7 @@ import qualified Expression as E
 -- Assignment (Add (E.Variable "x") (E.Literal 1)
 data BlockType
   = Skip
-  | Assignment E.AExpression E.AExpression
+  | Assignment String E.AExpression
   | Conditional E.BExpression
 
 -- | A block from the CFG is represented as a record than contains
@@ -66,7 +66,7 @@ kill ::
   BlockType ->
   S.Set String
 kill Skip = S.empty
-kill (Assignment (E.Variable var) _) = S.singleton var
+kill (Assignment var _) = S.singleton var
 kill (Conditional expression) = S.empty
 
 -- | Transfer function to get LVIn of a single block
@@ -105,7 +105,7 @@ getLVOut inBlock lVEquations =
         toSet = maybe S.empty lvIn
 
     fromListToLVOut :: [S.Set String] -> S.Set String
-    fromListToLVOut = L.foldl (flip S.union) S.empty
+    fromListToLVOut = S.unions
 
 -- | Get the live variable equations given a previous point
 getLV ::

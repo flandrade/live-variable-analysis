@@ -30,7 +30,7 @@ library
 
     -- LANGUAGE extensions used by modules in this package.
     -- other-extensions:
-    build-depends:    base ^>=4.16.3.0, containers
+    build-depends:    base >=4.16.3.0, containers
     hs-source-dirs:   src
     default-language: Haskell2010
 
@@ -43,7 +43,7 @@ executable assignment3
     -- LANGUAGE extensions used by modules in this package.
     -- other-extensions:
     build-depends:
-        base ^>=4.16.3.0,
+        base >=4.16.3.0,
         assignment3,
         containers
 
