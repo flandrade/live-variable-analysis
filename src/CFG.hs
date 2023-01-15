@@ -22,22 +22,22 @@ data BlockType
 -- ---------
 -- | x = 1 |---> Block 3
 -- ---------
--- .   |
+--    |
 --  Block 2
 --
 -- The block "1" can be represented as the following record:
 -- Block
 --   { block: Assignment (Add (E.Variable "x") (E.Literal 1))
--- .   label: 1
+--     label: 1
 --     outLink: [2, 3]
--- . }
+--   }
 data Block = Block
   { block :: BlockType,
     label :: Int,
     outLink :: [Int]
   }
 
--- | A control Control-Flow Graph (CFG) is a list of blocks
+-- | A Control-Flow Graph (CFG) is a list of blocks
 type CFG = [Block]
 
 -- | A record that contains LVin and LVOut equations of a single block.
