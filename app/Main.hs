@@ -1,5 +1,5 @@
 -- |
--- | Author      :  Fernanda Lucia Andrade Guanoquiza
+-- | Author      :  Fernanda Andrade
 -- | Date        :  2022-10-03
 -- |
 -- | Live Variable Analysis - Implementation

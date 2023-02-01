@@ -1,20 +1,20 @@
 # Live Variable Analysis
 
 This project is an implementation of live variable analysis, a technique used in compilers to determine the
-variables that are still in use at a certain point in a program's execution. The goal of live variable
-analysis is to optimize the code by identifying and removing dead code, which can improve the performance
-and reduce the memory footprint of the generated executable.
+variables that are still in use at a certain point in a program's execution.
 
 ## Implementation and Running the Analysis
 
 The implementation of live variable analysis in this project uses a data flow analysis algorithm to track
 the flow of variables through the program. The algorithm takes into account the control flow of the program
 and the use and definition of variables at each program point. The analysis is performed on the
-intermediate representation of the program, such as a [control flow graph](https://en.wikipedia.org/wiki/Control-flow_graph).
+intermediate representation of the program represented as a
+[control flow graph](https://en.wikipedia.org/wiki/Control-flow_graph).
 
-The algorithm used in this project is based on the iterative data flow analysis method, where the analysis
-is performed in multiple passes over the program until a fixed point is reached. This implementation was done in
-Haskell and uses a map structure to represent the live variables at each program point.
+The algorithm employed is based on the iterative data flow analysis method, where multiple passes
+are made over the program until the results converge to a stable solution. The implementation was
+written in Haskell and uses a map structure to store the live variables at each point in the
+program.
 
 To run the analysis:
 
@@ -25,7 +25,7 @@ cabal run
 
 ### Expressions
 
-An Arithmetic Expression is given by the following syntax: e ::= n | x | e1 + e2 | e1 - e2 | e1 \* e2
+An arithmetic expression is given by the following syntax: $e ::= n | x | e_1 + e_2 | e_1 - e_2 | e_1 * e_2$
 
 ```haskell
 data AExpression
@@ -36,9 +36,9 @@ data AExpression
   | Mul AExpression AExpression
 ```
 
-For example, the arithmetic expression "x + 1" is represented as: `Add (E.Variable "x") (E.Literal 1)`
+For example, the arithmetic expression `x + 1` is represented as: `Add (E.Variable "x") (E.Literal 1)`
 
-A Boolean Expression is given by the following syntax: b ::= e1 ≤ e2 | e1 = e2 | b1 ∧ b2
+On the other hand, a boolean expression is given by the following syntax: $b ::= e_1 \leq e_2 | e_1 = e_2 | b_1 \land b_2$
 
 ```haskell
 data BExpression
@@ -122,7 +122,7 @@ For this analysis, we compute the following set of variables:
 
   $VIn_n = (LVOut_n − Kill_n) \cup Gen_n$
 
-  where $Gen_n$ are variables that are read in block n, and $Kill_n$: are Variables that are written to in block n.
+  where $Gen_n$ are variables that are read in block n, and $Kill_n$: are variables that are written to in block n.
 
 - $LVOut_n$: Live variables at the exit of block n. A variable is live at the exit of a block if it is live
   at the entrance of any of the blocks following it. For instance, the block 1:
@@ -139,10 +139,27 @@ For this analysis, we compute the following set of variables:
 
 ### Solution of the Equation System
 
-The result is a system of equations whose unknown variables are $(LVOut_1, LVOut_1, ..LVIn_n)$. The
-solutions of this system are the fixed points of F, which is the supremum of the ascending [Kleene chain](https://en.wikipedia.org/wiki/Kleene_fixed-point_theorem).
+The result of this analysis is a system of equations with unknown variables
+$(LVOut_1, LVOut_2, ...LVIn_n)$. These variables represent the fixed points of $F$, which is defined
+as the supremum of the ascending
+[Kleene chain](https://en.wikipedia.org/wiki/Kleene_fixed-point_theorem). Here, $F$ is the vector:
 
-1. We obtain the Kleene chain, starting with a empty set for all LVIn and LVOut
+$$
+F =
+\begin{pmatrix}
+LVout_1 \\
+... \\
+LVout_1 \\
+LVIn_1 \\
+... \\
+LVIn_n \\
+\end{pmatrix}
+$$
+
+The solutions to this system can be found by repeating the following steps until the variables
+converge to a stable solution:
+
+1. Solving the data flow equations starts with initializing all LVIn and LVOut to the empty set:
 
    ```hs
    LV' = Map (1, LV { LVIn=empty, LVOut=empty })
@@ -154,10 +171,7 @@ solutions of this system are the fixed points of F, which is the supremum of the
    LV'' = getLV LV' ...
    ```
 
-We repeat (1) and (2) until the LV of the previous point is equal to the LV of the current point.
-
-For this, we create an infinite list that will return its values when the previous condition is met. The
-result of the analysis is the last element of the list, which represents the supremum of the ascending [Kleene chain](https://en.wikipedia.org/wiki/Kleene_fixed-point_theorem).
+We repeat (2) until the LV of the previous point is equal to the LV of the current point. This is the solution to our equation system!
 
 ## Example
 
@@ -207,4 +221,4 @@ LVIn4=[] LVOut4=[]
 
 ## Acknowledgment
 
-Assignment from "Static Program Analysis and Constraint Solving" at Universidad Complutense de Madrid. Prof. Manuel Montenegro.
+This implementation was a project assigned in the course "Static Program Analysis and Constraint Solving" at the Universidad Complutense de Madrid, taught by Professor Manuel Montenegro.
