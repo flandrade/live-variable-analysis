@@ -135,7 +135,7 @@ For this analysis, we compute the following set of variables:
   Block 2
   ```
 
-  The $LVout_1$ equation is: $LVOut_1 = LVIn_2 U LVIn_3$
+  The $LVout_1$ equation is: $LVOut_1 = LVIn_2 \cup LVIn_3$
 
 ### Solution of the Equation System
 
